@@ -1,0 +1,51 @@
+# Protección del directorio inc/
+# Denegar acceso a todos los archivos
+
+# Desactivar la lista de directorios
+Options -Indexes
+
+# Denegar acceso a todos los archivos
+<FilesMatch "\.(php|inc|txt|log|sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Permitir acceso solo a archivos específicos si es necesario
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "conexion.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "funciones.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "header.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "footer.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Prevenir acceso directo
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewRule .* - [F]
+</IfModule>
