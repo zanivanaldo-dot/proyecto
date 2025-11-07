@@ -1,0 +1,99 @@
+# Configuración de seguridad general
+
+# Desactivar firma del servidor
+ServerSignature Off
+
+# Protección contra ataques de inyección
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Protección contra SQL injection
+    RewriteCond %{QUERY_STRING} (;|<|>|'|"|\)|%0A|%0D|%22|%27|%3C|%3E|%00) [NC,OR]
+    RewriteCond %{QUERY_STRING} (exec|execute|select|insert|union|update|delete|drop|create) [NC]
+    RewriteRule .* - [F]
+    
+    # Protección contra XSS
+    RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (javascript:|vbscript:|onmouseover|onload) [NC]
+    RewriteRule .* - [F]
+    
+    # Protección contra directory traversal
+    RewriteCond %{QUERY_STRING} (\.\./|\.\.\\|\.\/) [NC,OR]
+    RewriteCond %{QUERY_STRING} (boot\.ini|etc/passwd|self/environ) [NC,OR]
+    RewriteCond %{QUERY_STRING} (GLOBALS|REQUEST)(=|\[|%) [NC]
+    RewriteRule .* - [F]
+</IfModule>
+
+# Protección de archivos sensibles
+<FilesMatch "\.(env|ini|log|sql|bak|backup)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "composer.json">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "README.md">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    # HSTS
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Clickjacking protection
+    Header always set X-Frame-Options "DENY"
+    
+    # MIME sniffing protection
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;"
+</IfModule>
+
+# Configuración de caché
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType text/html "access plus 600 seconds"
+</IfModule>
+
+# Compresión GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Prevenir acceso a directorios
+Options -Indexes
+
+# Configuración de archivos por defecto
+DirectoryIndex index.php index.html
