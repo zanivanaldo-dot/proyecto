@@ -1,0 +1,30 @@
+gestion_alquileres/
+├─ public/
+│  ├─ index.php            # dashboard
+│  ├─ login.php
+│  ├─ logout.php
+│  ├─ usuarios.php
+│  ├─ inquilinos.php
+│  ├─ contratos.php
+│  ├─ unidades.php
+│  ├─ expensas.php
+│  ├─ pagos.php
+│  ├─ reservas.php
+│  ├─ reparaciones.php
+│  ├─ reportes.php
+│  └─ assets/
+│     ├─ css/
+│     ├─ js/
+│     └─ img/
+├─ inc/
+│  ├─ header.php
+│  ├─ footer.php
+│  ├─ conexion.php
+│  └─ funciones.php
+├─ src/
+│  ├─ modelos/
+│  └─ controladores/
+├─ sql/
+│  ├─ gestion_alquileres_esquema.sql
+│  └─ seed_gestion_alquileres.sql
+└─ README.md
